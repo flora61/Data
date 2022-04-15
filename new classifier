@@ -1,0 +1,59 @@
+# Default random forest
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score
+
+x_train, x_test, y_train, y_test = model_selection.train_test_split(features, labels, test_size=0.3, random_state=666)
+forest = RandomForestRegressor(n_estimators=100, random_state=666, n_jobs=-1)
+forest.fit(x_train, y_train)
+print("Default random forest accuracy is",forest.score(x_test, y_test))
+
+y_train_pred = forest.predict(x_train)
+y_test_pred = forest.predict(x_test)
+
+print('R^2 train: %.3f, test: %.3f' % (r2_score(y_train, y_train_pred),
+        r2_score(y_test, y_test_pred)))
+
+# adjust n_estimators
+
+score_lt = []
+x_train, x_test, y_train, y_test = model_selection.train_test_split(features, labels, test_size=0.3, random_state=666)
+# fit a random forest every 10 steps
+for i in range(0,200,10):
+    rfc = RandomForestClassifier(n_estimators=i+1,random_state=666)
+    score = cross_val_score(rfc, x_train,y_train, cv=10).mean()
+    score_lt.append(score)
+score_max = max(score_lt)
+print('Max score：{}'.format(score_max),
+      'Numer of sub-trees：{}'.format(score_lt.index(score_max)*10+1))
+
+# plot
+x = np.arange(1,201,10)
+#plt.subplot(111)
+plt.plot(x, score_lt, 'r-')
+plt.show()
+
+# scale the range
+
+score_lt = []
+x_train, x_test, y_train, y_test = model_selection.train_test_split(features, labels, test_size=0.3, random_state=666)
+for i in range(50,70):
+    rfc = RandomForestClassifier(n_estimators=i
+                                ,random_state=666)
+    score = cross_val_score(rfc, x_train, y_train, cv=10).mean()
+    score_lt.append(score)
+score_max = max(score_lt)
+print('Max score：{}'.format(score_max),
+      'tree number：{}'.format(score_lt.index(score_max)+50))
+
+# plot
+x = np.arange(50,70)
+plt.plot(x, score_lt,'o-')
+plt.show()
+
+# use the best n_estimators to fit random forest
+
+forest = RandomForestClassifier(n_estimators=61, random_state=666, n_jobs=-1)
+forest.fit(x_train, y_train)
+print("Optimised random forest accuracy is",forest.score(x_test, y_test))
+
