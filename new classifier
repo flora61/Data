@@ -57,3 +57,8 @@ forest = RandomForestClassifier(n_estimators=61, random_state=666, n_jobs=-1)
 forest.fit(x_train, y_train)
 print("Optimised random forest accuracy is",forest.score(x_test, y_test))
 
+from sklearn.pipeline import Pipeline
+classifier = Pipeline([
+    ("predictor", RandomForestClassifier(n_estimators=61, random_state=666, n_jobs=-1)) ])
+
+classifier.fit(x_train, y_train)
